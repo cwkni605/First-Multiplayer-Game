@@ -18,6 +18,7 @@
                     }
                     else
                     {
+                        $saveString .= stripslashes($_POST['name']) . "\n";
                         $saveString .= stripslashes($_POST['email']) . "\n";
                         $saveString .= date('r') . "\n";
                         $saveString .= stripslashes($_POST['comment']) . "\n";
@@ -26,7 +27,8 @@
                         echo "\$currentTime: $currentTime <br>";
                         $timeArray = explode(" ", $currentTime);
                         echo var_dump($timeArray) . "<br>";
-                        $timeStamp = (float)$timeArray[1] + (float)$timeArray[0];
+                        //$timeStamp = (float)$timeArray[1] + (float)$timeArray[0];
+                        $timeStamp = 1999578923479234873;
                         echo "\$timeStamp: $timeStamp<br>";
                         $saveFileName = "$dir/Comment.$timeStamp.txt";
                         echo "\$saveFileName: $saveFileName<br>";
@@ -34,8 +36,7 @@
                         echo "<script>console.log(\"".$fileHandle."\");</script>";
                         if ($fileHandle === false)
                         {
-                            echo "There was an error creating \"" . 
-                                htmlentities($saveFileName) . "\".<br>\n";
+                            echo "There was an error creating \"" . htmlentities($saveFileName) . "\".<br>\n";
                         }
                         else
                         {
