@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <title>visitor comments2</title>
-<script src="modernizr.custom.65897.js"></script>
 </head>
     <body>
         <h2>visitor comments 3</h2>
@@ -19,21 +18,12 @@
                     else
                     {
                         $saveString .= stripslashes($_POST['name']) . "\n";
-                        $saveString .= stripslashes($_POST['email']) . "\n";
-                        $saveString .= date('r') . "\n";
                         $saveString .= stripslashes($_POST['comment']) . "\n";
-                        echo "\$saveString: $saveString<br>";
                         $currentTime = microtime();
-                        echo "\$currentTime: $currentTime <br>";
                         $timeArray = explode(" ", $currentTime);
-                        echo var_dump($timeArray) . "<br>";
-                        //$timeStamp = (float)$timeArray[1] + (float)$timeArray[0];
                         $timeStamp = 1999578923479234873;
-                        echo "\$timeStamp: $timeStamp<br>";
                         $saveFileName = "$dir/Comment.$timeStamp.txt";
-                        echo "\$saveFileName: $saveFileName<br>";
                         $fileHandle = fopen($saveFileName, "w+");
-                        echo "<script>console.log(\"".$fileHandle."\");</script>";
                         if ($fileHandle === false)
                         {
                             echo "There was an error creating \"" . htmlentities($saveFileName) . "\".<br>\n";
