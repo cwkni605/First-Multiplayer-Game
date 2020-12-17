@@ -16,76 +16,63 @@
                 $questionNumber = 1;
                 //sets uniform directorys
                 $gamedir ="./data/tests";
-                $tempGameDir ="./data/gameStates";
-                //checks to see if the dir is real
+                $tempGameDir ="./data/gameStates/$testFile";
+                //finds and retreives the question count
                 if (is_dir($gamedir)) {
                     $testFiles = scandir($gamedir);
                     foreach ($testFiles as $fileName) {
-                        //checks to see if the file is the right one
                         if ($fileName == $testFile.".txt") {
-                            //prints file name
-                            echo "From <strong>$fileName</strong><br>";
-                            //opens file reader
                             $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
+                            if ($fileHandle === false) {
+                                echo "There was an error reading file \"$fileName\".<br>\n";
+                            }
+                            else {
+                                $number = fgets($fileHandle);
+                                $questionNumber = htmlentities($number);
+                                fclose($fileHandle);
+                            }
+                        }
+                    }
+                }
+                //checks to see if the dir is real
+                if (is_dir($tempGameDir)) {
+                    $testFiles = scandir($tempGameDir);
+                    foreach ($testFiles as $fileName) {
+                        //checks to see if the file is the right one
+                        if ($fileName != $testFile.".txt" && $fileName != "." && $fileName != "..") {
+                            //prints file name
+                            echo "<strong>".explode(".", $fileName)[0]."</strong> Joined the KaBoop<br>";
+                            //opens file reader
+                            $fileHandle = fopen($tempGameDir . "/" . $fileName, "rb");
                             //error handler
                             if ($fileHandle === false) {
                                 echo "There was an error reading file \"$fileName\".<br>\n";
                             }
                             else {
                                 //prepares variables
-                                $questionNumber = fgets($fileHandle);
+                                $userquestionNumber = fgets($fileHandle);
                                 $notEnd = true;
-                                //loops untill all of the questions are looped through
-                                while($notEnd)
-                                {
-                                    //this prints out the question segments
-                                    for ($x = 0; $x <= 5; $x++)
-                                    {
-                                        $line = fgets($fileHandle);
-                                        if ($line == "") {
-                                            $notEnd = false;
-                                        break;
-                                        }
-                                        if($x == 0)
-                                        {
-                                            echo "Question: " . htmlentities($line) . "<br>\n";
-                                        }
-                                        else if($x <= 4)
-                                        {
-                                            echo htmlentities($line) . "<br>\n";
-                                        }
-                                        else if($x == 5)
-                                        {
-                                            echo "The Answer is " . htmlentities($line) . "<br>\n";
-                                        }
-                                        if ($line == "") {
-                                            echo "true";
-                                        }
-                                    }
-                                    //this removes the extra hr at the bottom when done
-                                    if (!$notEnd) {
-                                        break;
-                                    }
-                                    //puts an hr after each question
-                                    echo "<hr>\n";
-                                }
+                                //reads the the user data and sees if they are finished
+                                $line = fgets($fileHandle);
+                                //if()
+                                
                             }
                             //closes the file reader
                             fclose($fileHandle);
                         }
                     }
                 }
-                //this writes to a file
+                //this writes to the temp game file
                 if (is_dir($tempGameDir)) {
-                    $questionNumber = 0;
-                    $saveFileName = "$tempGameDir.$testFile.txt";
+                    $saveFileName = "$tempGameDir/$testFile.txt";
+                    $tempGameFileString .= $questionNumber."\n"."";
                     $fileHandle = fopen($saveFileName, "wb");
                     if ($fileHandle === false) {
                         echo "There was an error creating \"" .
                         htmlentities($saveFileName) . "\".<br>\n";
                     } else {
                         if (flock($fileHandle, LOCK_EX)) {    
-                            if (fwrite($fileHandle, $questionNumber) > 0){
+                            if (fwrite($fileHandle, $tempGameFileString) > 0){
                                 //echo "Successfully wrote to file \"" . htmlentities($saveFileName) . "\".<br>\n";
                             } else {
                                 echo "There was an error writing to \"" .
@@ -99,6 +86,7 @@
                         fclose($fileHandle);
                     }
                 }
+                echo '<script>setTimeout(function(){ location.replace(Host.php); }, 100);</script>';
             }
             else
             {
@@ -118,7 +106,6 @@
                                 echo "questions: " . htmlentities($from) . "<br>\n";
                                 fclose($fileHandle);
                             }
-    
                         }
                     }
                 }
@@ -126,6 +113,5 @@
                 echo '<h2>Kaboop Hosting</h2><form action="Host.php" method="post">Your test: <input type="text" name="testCode"><br></form>';
             }
         ?>
-        
     </body>
 </html>
