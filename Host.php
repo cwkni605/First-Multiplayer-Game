@@ -4,11 +4,75 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <title>Host</title>
+<style>
+    body
+    {
+        background-color: #9500ff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='968' height='116.2' viewBox='0 0 1000 120'%3E%3Cg fill='none' stroke='%2368008d' stroke-width='10.1' stroke-opacity='0.7'%3E%3Cpath d='M-500 75c0 0 125-30 250-30S0 75 0 75s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 45c0 0 125-30 250-30S0 45 0 45s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 105c0 0 125-30 250-30S0 105 0 105s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 15c0 0 125-30 250-30S0 15 0 15s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500-15c0 0 125-30 250-30S0-15 0-15s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3Cpath d='M-500 135c0 0 125-30 250-30S0 135 0 135s125 30 250 30s250-30 250-30s125-30 250-30s250 30 250 30s125 30 250 30s250-30 250-30'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    h2
+    {
+        background-color: rgb(180, 30, 255);
+        border-radius: 5px;
+        border-color: rgb(80, 0, 120);
+        border-width: 2px;
+        border-style: solid;
+        padding: 20px;
+        width: max-content;
+    }
+    p
+    {
+        background-color: rgb(180, 30, 255);
+        border-radius: 5px;
+        border-color: rgb(80, 0, 120);
+        border-width: 2px;
+        border-style: solid;
+        padding: 5px;
+        width: max-content;
+        margin: 0px;
+        margin-left: 20px;
+    }
+    p.answer
+    {
+        background-color: rgb(180, 30, 255);
+        border-radius: 5px;
+        border-color: rgb(80, 0, 120);
+        border-width: 2px;
+        border-style: solid;
+        padding: 5px;
+        width: max-content;
+        margin: 0px;
+        margin-left: 40px;
+    }
+    input
+    {
+        background-color: rgb(180, 30, 255);
+        border-radius: 5px;
+        border-color: rgb(80, 0, 120);
+        border-width: 4px;
+        border-style: solid;
+        padding: 5px;
+        width: 120px;
+        margin: 1px;
+        margin-left: 20px;
+    }
+    button
+    {
+        background-color: rgb(180, 30, 255);
+        border-radius: 5px;
+        border-color: rgb(80, 0, 120);
+        border-width: 2px;
+        border-style: solid;
+        padding: 5px;
+        width: 100px;
+        margin: 0px;
+        margin-left: 20px;
+    }
+</style>
 </head>
     <body>
         <h1>Kaboop Hosting</h1>
         <hr>
-        <h2>Participent list:</h2>
         <?php
             $testFile = $_POST['testCode'];
             //echo var_dump($_POST);
@@ -20,6 +84,7 @@
                 $gamedir ="./data/tests";
                 $tempGameDir ="./data/gameStates/$testFile";
                 // a function to retreave data easier
+                echo "<h2>Participent list:</h2>";
                 function get_user_data($nameofFile)
                 {
                     $testFile = $_POST['testCode'];
@@ -73,11 +138,11 @@
                             //prints file name
                             if(get_user_data($fileName) == "pending")
                             {
-                                echo "<strong>".explode(".", $fileName)[0]."</strong> scored " . get_user_data($fileName) . "<br>";
+                                echo "<p><strong>".explode(".", $fileName)[0]."</strong> scored " . get_user_data($fileName) . "</p><br>";
                             }
                             else
                             {
-                                echo "<strong>".explode(".", $fileName)[0] . "</strong> scored " . get_user_data($fileName) . " out of " . get_test_data() . " points<br>";
+                                echo "<p><strong>".explode(".", $fileName)[0] . "</strong> scored " . get_user_data($fileName) . " out of " . get_test_data() . " points</p><br>";
                             }
                             //opens file reader
                             $fileHandle = fopen($tempGameDir . "/" . $fileName, "rb");
@@ -132,21 +197,21 @@
                     $testFiles = scandir($gamedir);
                     foreach ($testFiles as $fileName) {
                         if ($fileName !== "." && $fileName !== "..") {
-                            echo "From <strong>$fileName</strong><br>";
+                            echo "<p>From <strong>" . explode(".", $fileName)[0] . "</strong></p><br>";
                             $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
                             if ($fileHandle === false) {
-                                echo "There was an error reading file \"$fileName\".<br>\n";
+                                echo "There was an error reading file \"$fileName\".<br>";
                             }
                             else {
                                 $from = fgets($fileHandle);
-                                echo "questions: " . htmlentities($from) . "<br>\n";
+                                echo "<p>questions: " . htmlentities($from) . "</p><br>";
                                 fclose($fileHandle);
                             }
                         }
                     }
                 }
                 //prints out a form so you can start hosting
-                echo '<h2>Kaboop Hosting</h2><form action="Host.php" method="post">Your test: <input type="text" name="testCode"><br></form>';
+                echo '<h2>Kaboop Hosting</h2><form action="Host.php" method="post"><p>Your test: </p><input type="text" name="testCode"><br></form>';
             }
         ?>
     </body>
