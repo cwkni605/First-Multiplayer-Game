@@ -126,7 +126,7 @@
                         }
                     }
                 }
-                echo '<h2>Kaboop Hosting</h2><form action="Join.php" method="post">Your test: <input type="text" name="testCode"><br>Your name: <input type="text" name="username"><br><button type="submit">JOIN</button></form>';
+                echo '<h2>Kaboop Hosting</h2><form action="Join.php" method="post">Enter Your Test Code: <input type="text" name="testCode"><br>Enter Your Username: <input type="text" name="username"><br><button type="submit">JOIN</button></form>';
             }
         ?>
     </body>

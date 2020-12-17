@@ -6,6 +6,7 @@
 <title>Join</title>
 </head>
     <body>
+    <center><h1>Great Job</h1></center>
         <h2>Finished Kaboop</h2>
         <?php
         $testFile = $_POST['testCode'];
@@ -82,7 +83,7 @@
                     } else {
                         if (flock($fileHandle, LOCK_EX)) {    
                             if (fwrite($fileHandle, $userdata) > 0){
-                                echo "Successfully saved your test";
+                                echo "Successfully saved your test, ask your test host for your score!";
                             } else {
                                 echo "There was an error writing to \"" .
                                 htmlentities($saveFileName) . "\".<br>\n";

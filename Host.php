@@ -6,8 +6,9 @@
 <title>Host</title>
 </head>
     <body>
-        <h2>Kaboop Hosting</h2>
+        <h1>Kaboop Hosting</h1>
         <hr>
+        <h2>Participent list:</h2>
         <?php
             $testFile = $_POST['testCode'];
             //echo var_dump($_POST);
@@ -76,7 +77,7 @@
                             }
                             else
                             {
-                                echo "<strong>".explode(".", $fileName)[0] . "</strong> scored " . get_user_data($fileName) . " out of " . get_test_data() . "<br>";
+                                echo "<strong>".explode(".", $fileName)[0] . "</strong> scored " . get_user_data($fileName) . " out of " . get_test_data() . " points<br>";
                             }
                             //opens file reader
                             $fileHandle = fopen($tempGameDir . "/" . $fileName, "rb");
