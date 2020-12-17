@@ -10,8 +10,12 @@
         <?php
         $testFile = $_POST['testCode'];
         $username = $_POST['username'];
+        //echo var_dump($_POST);
             if(is_string($testFile))
             {
+                //creats a form
+                echo '<form action="formProsseser.php" method="post">';
+                echo "Your test: <input readonly type='text' name='testCode' value='$testFile'><br>Your name: <input readonly type='text' name='username' value='$username'><br>";
                 $questionNumber = 0;
                 //sets uniform directorys
                 $gamedir ="./data/tests";
@@ -23,7 +27,7 @@
                         //checks to see if the file is the right one
                         if ($fileName == $testFile.".txt") {
                             //prints file name
-                            echo "Test code: <strong>$fileName</strong><br>";
+                            echo "Test code: <strong>".explode('.', $fileName)[0]."</strong><br>";
                             //opens file reader
                             $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
                             //error handler
@@ -35,8 +39,6 @@
                                 $questionNumber = fgets($fileHandle);
                                 $notEnd = true;
                                 $formquestionNumber = 0;
-                                //creats a form
-                                echo "<form>";
                                 //loops untill all of the questions are looped through
                                 while($notEnd)
                                 {
@@ -60,6 +62,7 @@
                                         else if($x == 5)
                                         {
                                             echo "The Answer is <select id='$formquestionNumber' name='$formquestionNumber'><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option></select><br>\n";
+                                            $formquestionNumber++;
                                         }
                                     }
                                     //this removes the extra hr at the bottom when done
@@ -69,6 +72,7 @@
                                     //puts an hr after each question
                                     echo "<hr>\n";
                                 }
+                                echo '<button type="submit">Submit</button></form';
                             }
                             //closes the file reader
                             fclose($fileHandle);
@@ -78,13 +82,14 @@
                 //this writes to a file
                 if (is_dir($tempGameDir)) {
                     $questionNumber = 0;
+                    $userdata = "pending";
                     $saveFileName = "$tempGameDir/$testFile/$username.txt";
                     $fileHandle = fopen($saveFileName, "wb");
                     if ($fileHandle === false) {
                         echo "There was an error creating \"" . htmlentities($saveFileName) . "\".<br>\n";
                     } else {
                         if (flock($fileHandle, LOCK_EX)) {    
-                            if (fwrite($fileHandle, $questionNumber) > 0){
+                            if (fwrite($fileHandle, $userdata) > 0){
                                 //echo "Successfully wrote to file \"" . htmlentities($saveFileName) . "\".<br>\n";
                             } else {
                                 echo "There was an error writing to \"" .

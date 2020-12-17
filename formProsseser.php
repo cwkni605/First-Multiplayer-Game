@@ -6,13 +6,15 @@
 <title>Join</title>
 </head>
     <body>
-        <h2>Join Kaboop</h2>
+        <h2>Finished Kaboop</h2>
         <?php
         $testFile = $_POST['testCode'];
         $username = $_POST['username'];
+        $testData = $_POST;
+        $questionsCorrect = 0;
+        $testAnswers = [];
             if(is_string($testFile))
             {
-                $questionNumber = 0;
                 //sets uniform directorys
                 $gamedir ="./data/tests";
                 $tempGameDir ="./data/gameStates";
@@ -23,7 +25,7 @@
                         //checks to see if the file is the right one
                         if ($fileName == $testFile.".txt") {
                             //prints file name
-                            echo "Test code: <strong>$fileName</strong><br>";
+                            echo "Test code: <strong>".explode('.', $fileName)[0]."</strong><br>";
                             //opens file reader
                             $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
                             //error handler
@@ -35,12 +37,10 @@
                                 $questionNumber = fgets($fileHandle);
                                 $notEnd = true;
                                 $formquestionNumber = 0;
-                                //creats a form
-                                echo "<form>";
                                 //loops untill all of the questions are looped through
                                 while($notEnd)
                                 {
-                                    //this prints out the question segments
+                                    //this assembles the answers
                                     for ($x = 0; $x <= 5; $x++)
                                     {
                                         $line = fgets($fileHandle);
@@ -49,25 +49,15 @@
                                             $notEnd = false;
                                         break;
                                         }
-                                        if($x == 0)
-                                        {
-                                            echo "Question: " . htmlentities($line) . "<br>\n";
-                                        }
-                                        else if($x <= 4)
-                                        {
-                                            echo $x . ": " . htmlentities($line) . "<br>\n";
-                                        }
                                         else if($x == 5)
                                         {
-                                            echo "The Answer is <select id='$formquestionNumber' name='$formquestionNumber'><option value='1'>1</option><option value='2'>2</option><option value='3'>3</option><option value='4'>4</option></select><br>\n";
+                                            array_push($testAnswers, htmlentities($line));
                                         }
                                     }
-                                    //this removes the extra hr at the bottom when done
+                                    //this removes extra code when done
                                     if (!$notEnd) {
                                         break;
                                     }
-                                    //puts an hr after each question
-                                    echo "<hr>\n";
                                 }
                             }
                             //closes the file reader
@@ -76,16 +66,23 @@
                     }
                 }
                 //this writes to a file
+                for ($i=0; $i < (count($_POST)-2); $i++) { 
+                    $out = $_POST[$i];
+                    if ($out == $testAnswers[$i]) {
+                        $questionsCorrect++;
+                    }
+                }
                 if (is_dir($tempGameDir)) {
-                    $questionNumber = 0;
+                    $userdata = $questionsCorrect;
                     $saveFileName = "$tempGameDir/$testFile/$username.txt";
+                    //echo $saveFileName."<br>";
                     $fileHandle = fopen($saveFileName, "wb");
                     if ($fileHandle === false) {
                         echo "There was an error creating \"" . htmlentities($saveFileName) . "\".<br>\n";
                     } else {
                         if (flock($fileHandle, LOCK_EX)) {    
-                            if (fwrite($fileHandle, $questionNumber) > 0){
-                                //echo "Successfully wrote to file \"" . htmlentities($saveFileName) . "\".<br>\n";
+                            if (fwrite($fileHandle, $userdata) > 0){
+                                echo "Successfully saved your test";
                             } else {
                                 echo "There was an error writing to \"" .
                                 htmlentities($saveFileName) . "\".<br>\n";
@@ -98,30 +95,6 @@
                         fclose($fileHandle);
                     }
                 }
-            }
-            //prints out login form if not logged in
-            else
-            {
-                $gamedir ="./data/tests";
-                if (is_dir($gamedir)) {
-                    $testFiles = scandir($gamedir);
-                    foreach ($testFiles as $fileName) {
-                        if ($fileName !== "." && $fileName !== "..") {
-                            echo "From <strong>$fileName</strong><br>";
-                            $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
-                            if ($fileHandle === false) {
-                                echo "There was an error reading file \"$fileName\".<br>\n";
-                            }
-                            else {
-                                $from = fgets($fileHandle);
-                                echo "questions: " . htmlentities($from) . "<br>\n";
-                                fclose($fileHandle);
-                            }
-    
-                        }
-                    }
-                }
-                echo '<h2>Kaboop Hosting</h2><form action="Join.php" method="post">Your test: <input type="text" name="testCode"><br>Your name: <input type="text" name="username"><br><button type="submit">JOIN</button></form>';
             }
         ?>
     </body>

@@ -10,6 +10,7 @@
         <hr>
         <?php
             $testFile = $_POST['testCode'];
+            //echo var_dump($_POST);
             //if the $_POST has the needed data then run the hoster if not run test selector
             if(is_string($testFile))
             {
@@ -17,19 +18,47 @@
                 //sets uniform directorys
                 $gamedir ="./data/tests";
                 $tempGameDir ="./data/gameStates/$testFile";
-                //finds and retreives the question count
-                if (is_dir($gamedir)) {
-                    $testFiles = scandir($gamedir);
-                    foreach ($testFiles as $fileName) {
-                        if ($fileName == $testFile.".txt") {
-                            $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
-                            if ($fileHandle === false) {
-                                echo "There was an error reading file \"$fileName\".<br>\n";
+                // a function to retreave data easier
+                function get_user_data($nameofFile)
+                {
+                    $testFile = $_POST['testCode'];
+                    $tempGameDir ="./data/gameStates/$testFile";
+                    if (is_dir($tempGameDir)) {
+                        $testFiles = scandir($tempGameDir);
+                        foreach ($testFiles as $fileName) {
+                            if ($fileName == $nameofFile) {
+                                $fileHandle = fopen($tempGameDir . "/" . $fileName, "rb");
+                                if ($fileHandle === false) {
+                                    echo "There was an error reading file \"$fileName\".<br>\n";
+                                }
+                                else {
+                                    $line = fgets($fileHandle);
+                                    //$questionNumber = htmlentities($number);
+                                    return $line;
+                                    fclose($fileHandle);
+                                }
                             }
-                            else {
-                                $number = fgets($fileHandle);
-                                $questionNumber = htmlentities($number);
-                                fclose($fileHandle);
+                        }
+                    }
+                }
+                function get_test_data()
+                {
+                    $testFile = $_POST['testCode'];
+                    $gamedir ="./data/tests";
+                    if (is_dir($gamedir)) {
+                        $testFiles = scandir($gamedir);
+                        foreach ($testFiles as $fileName) {
+                            if ($fileName == $testFile.'.txt') {
+                                $fileHandle = fopen($gamedir . "/" . $fileName, "rb");
+                                if ($fileHandle === false) {
+                                    echo "There was an error reading file \"$fileName\".<br>\n";
+                                }
+                                else {
+                                    $line = fgets($fileHandle);
+                                    $questionNumber = htmlentities($line);
+                                    return $line;
+                                    fclose($fileHandle);
+                                }
                             }
                         }
                     }
@@ -41,7 +70,14 @@
                         //checks to see if the file is the right one
                         if ($fileName != $testFile.".txt" && $fileName != "." && $fileName != "..") {
                             //prints file name
-                            echo "<strong>".explode(".", $fileName)[0]."</strong> Joined the KaBoop<br>";
+                            if(get_user_data($fileName) == "pending")
+                            {
+                                echo "<strong>".explode(".", $fileName)[0]."</strong> scored " . get_user_data($fileName) . "<br>";
+                            }
+                            else
+                            {
+                                echo "<strong>".explode(".", $fileName)[0] . "</strong> scored " . get_user_data($fileName) . " out of " . get_test_data() . "<br>";
+                            }
                             //opens file reader
                             $fileHandle = fopen($tempGameDir . "/" . $fileName, "rb");
                             //error handler
@@ -65,11 +101,10 @@
                 //this writes to the temp game file
                 if (is_dir($tempGameDir)) {
                     $saveFileName = "$tempGameDir/$testFile.txt";
-                    $tempGameFileString .= $questionNumber."\n"."";
+                    $tempGameFileString = $questionNumber;
                     $fileHandle = fopen($saveFileName, "wb");
                     if ($fileHandle === false) {
-                        echo "There was an error creating \"" .
-                        htmlentities($saveFileName) . "\".<br>\n";
+                        echo "There was an error creating \"" . htmlentities($saveFileName) . "\".<br>\n";
                     } else {
                         if (flock($fileHandle, LOCK_EX)) {    
                             if (fwrite($fileHandle, $tempGameFileString) > 0){
@@ -86,7 +121,7 @@
                         fclose($fileHandle);
                     }
                 }
-                echo '<script>setTimeout(function(){ location.replace(Host.php); }, 100);</script>';
+                echo '<script>setTimeout(function(){ location.reload(); }, 500);</script>';
             }
             else
             {
